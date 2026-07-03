@@ -34,15 +34,15 @@
     <form method="POST">
       {% if casas %}
       <div class="form-grupo">
-        <label class="form-label" for="casa_id">🏘️ Sua instituição</label>
+        <label class="form-label" for="casa_id">🏘️ Sua instituição <span class="form-obrigatorio">*</span></label>
         <select id="casa_id" name="casa_id" class="form-select">
-          <option value="">— Selecione (ou deixe em branco) —</option>
+          <option value="">— Selecione sua instituição —</option>
           {% for c in casas %}
           <option value="{{ c.id }}">{{ c.nome }}</option>
           {% endfor %}
         </select>
         <small style="color:var(--cor-texto-suave)">
-          Ajuda a confirmar que você está entrando na casa certa. Se não souber, pode deixar em branco.
+          Obrigatório para usuários da equipe e responsáveis. (Superadmin pode deixar em branco.)
         </small>
       </div>
       {% endif %}

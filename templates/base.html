@@ -50,8 +50,11 @@
         <a href="{{ url_for('logout') }}" class="nav-link">Sair</a>
 
       {% elif session.get('usuario_perfil') == 'superadmin' %}
-        <!-- Superadmin: só gerencia a lista de casas -->
-        <a href="{{ url_for('listar_casas') }}" class="nav-link ativo">Casas</a>
+        <!-- Superadmin: gerencia a lista de casas -->
+        <a href="{{ url_for('listar_casas') }}"
+           class="nav-link {% if request.endpoint == 'listar_casas' %}ativo{% endif %}">Casas</a>
+        <a href="{{ url_for('meu_perfil') }}"
+           class="nav-link {% if request.endpoint == 'meu_perfil' %}ativo{% endif %}">👤 Meu Perfil</a>
         <a href="{{ url_for('logout') }}" class="nav-link">Sair</a>
 
       {% elif session.get('usuario_nome') %}
@@ -108,9 +111,15 @@
 {% elif session.get('usuario_perfil') == 'superadmin' %}
   <!-- Nav bottom para superadmin -->
   <nav class="nav-bottom">
-    <a href="{{ url_for('listar_casas') }}" class="nav-bottom-item ativo">
+    <a href="{{ url_for('listar_casas') }}"
+       class="nav-bottom-item {% if request.endpoint == 'listar_casas' %}ativo{% endif %}">
       <span class="nav-bottom-icon">🏘️</span>
       <span>Casas</span>
+    </a>
+    <a href="{{ url_for('meu_perfil') }}"
+       class="nav-bottom-item {% if request.endpoint == 'meu_perfil' %}ativo{% endif %}">
+      <span class="nav-bottom-icon">👤</span>
+      <span>Perfil</span>
     </a>
     <a href="{{ url_for('logout') }}" class="nav-bottom-item">
       <span class="nav-bottom-icon">🚪</span>

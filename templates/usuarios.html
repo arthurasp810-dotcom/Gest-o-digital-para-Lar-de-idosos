@@ -58,12 +58,18 @@
           </td>
           <td style="padding:12px 14px">
             {% if u.id != session.get('usuario_id') %}
-            <form method="POST" action="{{ url_for('toggle_usuario', usuario_id=u.id) }}"
-                  onsubmit="return confirm('{{ 'Desativar' if u.ativo else 'Ativar' }} este usuário?')">
-              <button type="submit" class="botao botao-pequeno {{ 'botao-perigo' if u.ativo else 'botao-secundario' }}">
-                {{ 'Desativar' if u.ativo else 'Ativar' }}
-              </button>
-            </form>
+            <div style="display:flex;gap:.4rem;flex-wrap:wrap">
+              <form method="POST" action="{{ url_for('toggle_usuario', usuario_id=u.id) }}"
+                    onsubmit="return confirm('{{ 'Desativar' if u.ativo else 'Ativar' }} este usuário?')">
+                <button type="submit" class="botao botao-pequeno {{ 'botao-perigo' if u.ativo else 'botao-secundario' }}">
+                  {{ 'Desativar' if u.ativo else 'Ativar' }}
+                </button>
+              </form>
+              <form method="POST" action="{{ url_for('excluir_usuario', usuario_id=u.id) }}"
+                    onsubmit="return confirm('Excluir permanentemente {{ u.nome }}? Esta ação não pode ser desfeita.')">
+                <button type="submit" class="botao botao-pequeno botao-perigo">Excluir</button>
+              </form>
+            </div>
             {% endif %}
           </td>
         </tr>

@@ -599,6 +599,10 @@ def login():
             flash('O acesso da sua instituição está temporariamente desativado. Contate o suporte.', 'erro')
             return render_template('login.html', casas=casas_login)
 
+        if usuario and usuario['casa_id'] and not casa_id_escolhida:
+            flash('Selecione sua instituição antes de entrar.', 'erro')
+            return render_template('login.html', casas=casas_login)
+
         if usuario and verificar_senha(senha, usuario['senha']):
             session.permanent = True
             session['usuario_id']     = usuario['id']
@@ -733,10 +737,6 @@ def desvincular_idoso():
 @app.route('/meu-perfil', methods=['GET', 'POST'])
 @login_obrigatorio
 def meu_perfil():
-    if session.get('usuario_perfil') == 'superadmin':
-        flash('Acesso não disponível para o superadmin.', 'erro')
-        return redirect(url_for('listar_casas'))
-
     usuario_id = session['usuario_id']
     eh_admin = session.get('usuario_perfil') == 'admin'
     with get_db() as conn:
@@ -884,10 +884,15 @@ def painel_responsavel():
             (paciente_id,)
         ).fetchall()
 
+        evolucoes = conn.execute(
+            'SELECT * FROM evolucoes_medicas WHERE paciente_id = ? ORDER BY data_evolucao DESC',
+            (paciente_id,)
+        ).fetchall()
+
     return render_template('pacienteresponsavel.html',
         paciente=paciente_dict, condicoes=condicoes, medicamentos=medicamentos,
         ficha_psico=ficha_psico, profissionais=profissionais, dieta=dieta,
-        visitas=visitas, exames=exames)
+        visitas=visitas, exames=exames, evolucoes=evolucoes)
 
 
 # ============================================================================
@@ -971,6 +976,34 @@ def toggle_usuario(usuario_id):
             conn.execute('UPDATE usuarios SET ativo = ? WHERE id = ?', (novo_status, usuario_id))
             acao = 'ativado' if novo_status else 'desativado'
             flash(f'Usuário {usuario["nome"]} {acao}.', 'sucesso')
+    return redirect(url_for('listar_usuarios'))
+
+
+@app.route('/usuarios/<int:usuario_id>/excluir', methods=['POST'])
+@login_obrigatorio
+@apenas_admin
+def excluir_usuario(usuario_id):
+    if usuario_id == session.get('usuario_id'):
+        flash('Você não pode excluir sua própria conta.', 'erro')
+        return redirect(url_for('listar_usuarios'))
+    with get_db() as conn:
+        usuario = conn.execute(
+            'SELECT nome, perfil FROM usuarios WHERE id = ? AND casa_id = ?',
+            (usuario_id, casa_id_atual())
+        ).fetchone()
+        if not usuario:
+            flash('Usuário não encontrado.', 'erro')
+            return redirect(url_for('listar_usuarios'))
+        if usuario['perfil'] == 'admin':
+            outros_admins = conn.execute(
+                'SELECT COUNT(*) as total FROM usuarios WHERE casa_id = ? AND perfil = ? AND ativo = 1 AND id != ?',
+                (casa_id_atual(), 'admin', usuario_id)
+            ).fetchone()['total']
+            if outros_admins == 0:
+                flash('Não é possível excluir o único administrador da casa.', 'erro')
+                return redirect(url_for('listar_usuarios'))
+        conn.execute('DELETE FROM usuarios WHERE id = ? AND casa_id = ?', (usuario_id, casa_id_atual()))
+        flash(f'Usuário {usuario["nome"]} excluído permanentemente.', 'sucesso')
     return redirect(url_for('listar_usuarios'))
 
 

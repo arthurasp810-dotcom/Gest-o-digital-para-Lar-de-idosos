@@ -256,6 +256,25 @@
 </div>
 {% endif %}
 
+<!-- Evolução Médica -->
+{% if evolucoes %}
+<div class="secao">
+  <div class="secao-cabecalho">
+    <h2 class="secao-titulo">📋 Evolução Médica</h2>
+  </div>
+  {% for ev in evolucoes %}
+  <div style="padding:.75rem 0;border-bottom:1px solid var(--cor-borda)">
+    <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.3rem;flex-wrap:wrap">
+      <span style="background:var(--cor-primaria-clara);color:var(--cor-primaria-escura);padding:2px 8px;border-radius:20px;font-size:.75rem;font-weight:600">{{ ev.data_evolucao }}</span>
+      {% if ev.profissional %}<strong>{{ ev.profissional }}</strong>{% endif %}
+      {% if ev.especialidade %}<span style="color:var(--cor-texto-suave);font-size:.85rem">· {{ ev.especialidade }}</span>{% endif %}
+    </div>
+    <div style="font-size:.9rem;line-height:1.5">{{ ev.descricao }}</div>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+
 <!-- Exames -->
 {% if exames %}
 <div class="secao">
