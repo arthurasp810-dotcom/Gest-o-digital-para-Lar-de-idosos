@@ -2,18 +2,18 @@
 {% block titulo %}Agenda Diária{% endblock %}
 
 {% block conteudo %}
-<h1 class="titulo-pagina">💊 Agenda do Dia</h1>
+<h1 class="titulo-pagina"><i class="ti ti-calendar" aria-hidden="true"></i> Agenda do Dia</h1>
 <p class="subtitulo">Medicamentos organizados por horário.</p>
 
 <div class="barra-acoes">
   <a href="{{ url_for('index') }}" class="botao botao-secundario">← Pacientes</a>
-  <button onclick="window.print()" class="botao botao-secundario">🖨️ Imprimir</button>
+  <button onclick="window.print()" class="botao botao-secundario"><i class="ti ti-printer" aria-hidden="true"></i> Imprimir</button>
 </div>
 
 {% if agenda %}
   {% for horario, itens in agenda.items() %}
   <div class="agenda-horario">
-    <div class="agenda-horario-titulo">🕐 {{ horario[:5] }}</div>
+    <div class="agenda-horario-titulo"><i class="ti ti-clock" aria-hidden="true"></i> {{ horario[:5] }}</div>
     <div class="agenda-lista">
       {% for item in itens %}
       <div class="agenda-item">
@@ -34,7 +34,7 @@
         </div>
         {% if item.instrucoes %}
         <div style="font-size:.85rem;color:var(--cor-texto-suave);font-style:italic">
-          ℹ️ {{ item.instrucoes }}
+          <i class="ti ti-info-circle" aria-hidden="true"></i> {{ item.instrucoes }}
         </div>
         {% endif %}
         <div class="agenda-acoes">
@@ -42,7 +42,7 @@
                 action="{{ url_for('administrar_dose', medicamento_id=item.medicamento_id) }}">
             <input type="hidden" name="horario_previsto" value="{{ horario }}">
             <button type="submit" class="botao botao-primario botao-pequeno"
-                    style="width:100%">✓ Administrado</button>
+                    style="width:100%"><i class="ti ti-check" aria-hidden="true"></i> Administrado</button>
           </form>
           <a href="{{ url_for('detalhe_paciente', paciente_id=item.paciente_id) }}"
              class="botao botao-secundario botao-pequeno"
@@ -55,7 +55,7 @@
   {% endfor %}
 {% else %}
   <div class="vazio">
-    <span class="vazio-icone">💊</span>
+    <span class="vazio-icone"><i class="ti ti-calendar-off" aria-hidden="true"></i></span>
     <h2 class="vazio-titulo">Nenhuma medicação agendada</h2>
     <p class="vazio-texto">Cadastre pacientes e medicamentos para ver a agenda.</p>
     <a href="{{ url_for('index') }}" class="botao botao-primario">Ver Pacientes</a>

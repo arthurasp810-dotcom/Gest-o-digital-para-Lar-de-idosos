@@ -72,12 +72,12 @@
 <!-- Ações -->
 <div class="barra-acoes">
   <a href="{{ url_for('editar_paciente', paciente_id=paciente.id) }}"
-     class="botao botao-secundario">✏️ Editar</a>
+     class="botao botao-secundario"><i class="ti ti-edit" aria-hidden="true"></i> Editar</a>
   <a href="{{ url_for('index') }}" class="botao botao-secundario">← Voltar</a>
   <form method="POST" action="{{ url_for('excluir_paciente', paciente_id=paciente.id) }}"
         onsubmit="return confirm('Remover este paciente? Todos os dados serão apagados.');"
         style="margin-left:auto">
-    <button type="submit" class="botao botao-perigo botao-pequeno">🗑️ Remover</button>
+    <button type="submit" class="botao botao-perigo botao-pequeno"><i class="ti ti-trash" aria-hidden="true"></i> Remover</button>
   </form>
 </div>
 
@@ -85,15 +85,15 @@
 <div style="display:flex;gap:.75rem;flex-wrap:wrap;margin-bottom:1rem">
   <a href="{{ url_for('listar_visitas', paciente_id=paciente.id) }}"
      class="botao botao-secundario botao-pequeno">
-    👥 Visitas <span style="background:var(--cor-primaria);color:#fff;border-radius:20px;padding:1px 7px;font-size:11px;margin-left:4px">{{ total_visitas }}</span>
+    <i class="ti ti-users" aria-hidden="true"></i> Visitas <span style="background:var(--cor-primaria);color:#fff;border-radius:20px;padding:1px 7px;font-size:11px;margin-left:4px">{{ total_visitas }}</span>
   </a>
   <a href="{{ url_for('listar_exames', paciente_id=paciente.id) }}"
      class="botao botao-secundario botao-pequeno">
-    🔬 Exames <span style="background:var(--cor-primaria);color:#fff;border-radius:20px;padding:1px 7px;font-size:11px;margin-left:4px">{{ total_exames }}</span>
+    <i class="ti ti-microscope" aria-hidden="true"></i> Exames <span style="background:var(--cor-primaria);color:#fff;border-radius:20px;padding:1px 7px;font-size:11px;margin-left:4px">{{ total_exames }}</span>
   </a>
   <a href="{{ url_for('listar_evolucoes', paciente_id=paciente.id) }}"
      class="botao botao-secundario botao-pequeno">
-    📋 Evolução Médica <span style="background:var(--cor-primaria);color:#fff;border-radius:20px;padding:1px 7px;font-size:11px;margin-left:4px">{{ total_evolucoes }}</span>
+    <i class="ti ti-clipboard-list" aria-hidden="true"></i> Evolução Médica <span style="background:var(--cor-primaria);color:#fff;border-radius:20px;padding:1px 7px;font-size:11px;margin-left:4px">{{ total_evolucoes }}</span>
   </a>
 </div>
 
@@ -139,10 +139,10 @@
 ══════════════════════════════════════════════════ -->
 <div class="secao">
   <div class="secao-cabecalho">
-    <h2 class="secao-titulo">🥗 Comorbidades e Alimentação</h2>
+    <h2 class="secao-titulo"><i class="ti ti-salad" aria-hidden="true"></i> Comorbidades e Alimentação</h2>
     <button class="botao botao-primario botao-pequeno"
             onclick="abrirModal('modal-dieta')">
-      {{ '✏️ Editar' if dieta else '+ Preencher' }}
+      {{ '<i class="ti ti-edit"></i> Editar' if dieta else '+ Preencher' }}
     </button>
   </div>
   {% if dieta %}
@@ -174,7 +174,7 @@
       {% if dieta.alergias_alimentares %}
       <div class="dado-item">
         <div class="dado-label">Alergias Alimentares</div>
-        <div class="dado-valor" style="font-weight:400;font-size:.95rem;color:var(--cor-erro)">⚠️ {{ dieta.alergias_alimentares }}</div>
+        <div class="dado-valor" style="font-weight:400;font-size:.95rem;color:var(--cor-erro)"><i class="ti ti-alert-triangle" aria-hidden="true"></i> {{ dieta.alergias_alimentares }}</div>
       </div>
       {% endif %}
       {% if dieta.observacoes_nutricao %}
@@ -194,10 +194,10 @@
 ══════════════════════════════════════════════════ -->
 <div class="secao">
   <div class="secao-cabecalho">
-    <h2 class="secao-titulo">🧠 Ficha Psicológica</h2>
+    <h2 class="secao-titulo"><i class="ti ti-brain" aria-hidden="true"></i> Ficha Psicológica</h2>
     <button class="botao botao-primario botao-pequeno"
             onclick="abrirModal('modal-psicologico')">
-      {{ '✏️ Editar' if ficha_psico else '+ Preencher' }}
+      {{ '<i class="ti ti-edit"></i> Editar' if ficha_psico else '+ Preencher' }}
     </button>
   </div>
   {% if ficha_psico %}
@@ -246,7 +246,7 @@
 ══════════════════════════════════════════════════ -->
 <div class="secao">
   <div class="secao-cabecalho">
-    <h2 class="secao-titulo">👨‍⚕️ Profissionais Consultados</h2>
+    <h2 class="secao-titulo"><i class="ti ti-stethoscope" aria-hidden="true"></i> Profissionais Consultados</h2>
     <button class="botao botao-primario botao-pequeno"
             onclick="abrirModal('modal-profissional')">+ Adicionar</button>
   </div>
@@ -302,7 +302,7 @@
         <div>
           <small style="color:var(--cor-texto-suave);font-weight:700;font-size:.75rem;text-transform:uppercase">Horários:</small>
           <div class="horarios-tags">
-            {% for h in m.horarios %}<span class="horario-tag">🕐 {{ h[:5] }}</span>{% endfor %}
+            {% for h in m.horarios %}<span class="horario-tag"><i class="ti ti-clock" aria-hidden="true"></i> {{ h[:5] }}</span>{% endfor %}
           </div>
         </div>
         {% endif %}
@@ -313,7 +313,7 @@
         <div style="margin-top:.4rem">
           <span style="background:#fff5f5;color:var(--cor-erro);border:1px solid var(--cor-erro);
                        padding:2px 8px;border-radius:20px;font-size:.75rem;font-weight:700">
-            💊 Antibiótico
+            <i class="ti ti-pill" aria-hidden="true"></i> Antibiótico
             {% if m.dias_restantes_antibiotico is not none %}
               {% if m.dias_restantes_antibiotico < 0 %}
                 — tratamento encerrado
@@ -328,7 +328,7 @@
         {% endif %}
         {% if m.doses_hoje %}
         <div style="font-size:.78rem;color:var(--cor-texto-suave);margin-top:.4rem">
-          ✓ {{ m.doses_hoje }} dose(s) administrada(s) hoje
+          <i class="ti ti-check" aria-hidden="true"></i> {{ m.doses_hoje }} dose(s) administrada(s) hoje
         </div>
         {% endif %}
         {% if m.ultimas_doses %}
@@ -339,7 +339,7 @@
           <div style="margin-top:.4rem;display:flex;flex-direction:column;gap:.3rem">
             {% for d in m.ultimas_doses %}
             <div style="font-size:.78rem;color:var(--cor-texto-suave);border-left:2px solid var(--cor-primaria);padding-left:.5rem">
-              ✓ {{ d.horario_administrado[:16] if d.horario_administrado else '—' }}
+              <i class="ti ti-check" aria-hidden="true"></i> {{ d.horario_administrado[:16] if d.horario_administrado else '—' }}
               {% if d.administrado_por %} · por {{ d.administrado_por }}{% endif %}
               {% if d.observacoes %} · {{ d.observacoes }}{% endif %}
             </div>
@@ -349,7 +349,7 @@
         {% endif %}
         <div class="medicamento-acoes">
           <form method="POST" action="{{ url_for('administrar_dose', medicamento_id=m.id) }}">
-            <button type="submit" class="botao botao-primario botao-pequeno">✓ Registrar Dose</button>
+            <button type="submit" class="botao botao-primario botao-pequeno"><i class="ti ti-check" aria-hidden="true"></i> Registrar Dose</button>
           </form>
           <form method="POST" action="{{ url_for('excluir_medicamento', medicamento_id=m.id) }}"
                 onsubmit="return confirm('Remover este medicamento?');">
@@ -460,7 +460,7 @@
         <label class="form-label" style="display:flex;align-items:center;gap:.5rem;cursor:pointer">
           <input type="checkbox" name="eh_antibiotico" value="1"
                  onchange="document.getElementById('campo-fim-tratamento').style.display = this.checked ? 'block' : 'none'">
-          💊 Este medicamento é um antibiótico
+          <i class="ti ti-pill" aria-hidden="true"></i> Este medicamento é um antibiótico
         </label>
       </div>
       <div class="form-grupo" id="campo-fim-tratamento" style="display:none">
@@ -481,7 +481,7 @@
   <div class="modal-conteudo">
     <div class="modal-alca"></div>
     <div class="modal-cabecalho">
-      <h3 class="modal-titulo">🧠 Ficha Psicológica</h3>
+      <h3 class="modal-titulo"><i class="ti ti-brain" aria-hidden="true"></i> Ficha Psicológica</h3>
       <button class="modal-fechar" onclick="fecharModal('modal-psicologico')" type="button">×</button>
     </div>
     <form method="POST" action="{{ url_for('salvar_psicologico', paciente_id=paciente.id) }}">
@@ -524,7 +524,7 @@
   <div class="modal-conteudo">
     <div class="modal-alca"></div>
     <div class="modal-cabecalho">
-      <h3 class="modal-titulo">👨‍⚕️ Profissional Consultado</h3>
+      <h3 class="modal-titulo"><i class="ti ti-stethoscope" aria-hidden="true"></i> Profissional Consultado</h3>
       <button class="modal-fechar" onclick="fecharModal('modal-profissional')" type="button">×</button>
     </div>
     <form method="POST" action="{{ url_for('novo_profissional', paciente_id=paciente.id) }}">
@@ -561,7 +561,7 @@
   <div class="modal-conteudo">
     <div class="modal-alca"></div>
     <div class="modal-cabecalho">
-      <h3 class="modal-titulo">🥗 Comorbidades e Alimentação</h3>
+      <h3 class="modal-titulo"><i class="ti ti-salad" aria-hidden="true"></i> Comorbidades e Alimentação</h3>
       <button class="modal-fechar" onclick="fecharModal('modal-dieta')" type="button">×</button>
     </div>
     <form method="POST" action="{{ url_for('salvar_dieta', paciente_id=paciente.id) }}">
@@ -595,7 +595,7 @@
                value="{{ dieta.restricoes_alimentares if dieta else '' }}">
       </div>
       <div class="form-grupo">
-        <label class="form-label">⚠️ Alergias Alimentares</label>
+        <label class="form-label"><i class="ti ti-alert-triangle" aria-hidden="true"></i> Alergias Alimentares</label>
         <input type="text" name="alergias_alimentares" class="form-input"
                placeholder="Ex: Amendoim, Frutos do mar, Leite..."
                value="{{ dieta.alergias_alimentares if dieta else '' }}">

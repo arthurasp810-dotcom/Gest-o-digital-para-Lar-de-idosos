@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="description" content="Sistema de gestão para instituições de cuidado">
-  <meta name="theme-color" content="#2d6a7a">
+  <meta name="theme-color" content="#1e4d5a">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -15,7 +15,8 @@
   <title>{% block titulo %}GestCare{% endblock %} - Sistema</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=DM+Serif+Display&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body data-notificacoes="{{ 'equipe' if session.get('usuario_perfil') in ('enfermeiro', 'admin') else '' }}">
@@ -24,58 +25,77 @@
   <div class="cabecalho-container">
     {% if session.get('usuario_perfil') == 'responsavel' %}
       <a href="{{ url_for('painel_responsavel') }}" class="logo">
-        <span class="logo-icon">💙</span>
+        <span class="logo-mark"><i class="ti ti-heartbeat" aria-hidden="true"></i></span>
         <span>GestCare</span>
       </a>
     {% elif session.get('usuario_perfil') == 'superadmin' %}
       <a href="{{ url_for('listar_casas') }}" class="logo">
-        <span class="logo-icon">💙</span>
+        <span class="logo-mark"><i class="ti ti-heartbeat" aria-hidden="true"></i></span>
         <span>GestCare</span>
       </a>
     {% else %}
       <a href="{{ url_for('index') }}" class="logo">
-        <span class="logo-icon">💙</span>
+        <span class="logo-mark"><i class="ti ti-heartbeat" aria-hidden="true"></i></span>
         <span>GestCare</span>
         {% if session.get('casa_nome') %}
-          <span style="font-size:.7rem;font-weight:600;background:rgba(255,255,255,.18);
-                       padding:2px 8px;border-radius:20px;margin-left:8px">{{ session.get('casa_nome') }}</span>
+          <span style="font-size:.7rem;font-weight:600;background:rgba(255,255,255,.15);
+                       padding:2px 8px;border-radius:20px;margin-left:8px;letter-spacing:.03em">{{ session.get('casa_nome') }}</span>
         {% endif %}
       </a>
     {% endif %}
 
     <nav class="nav-menu-desktop">
       {% if session.get('usuario_perfil') == 'responsavel' %}
-        <!-- Responsável: só vê ficha do paciente e sair -->
-        <a href="{{ url_for('painel_responsavel') }}" class="nav-link ativo">Ficha do Paciente</a>
-        <a href="{{ url_for('logout') }}" class="nav-link">Sair</a>
+        <a href="{{ url_for('painel_responsavel') }}" class="nav-link ativo">
+          <i class="ti ti-clipboard-list" aria-hidden="true"></i> Ficha do Paciente
+        </a>
+        <a href="{{ url_for('logout') }}" class="nav-link">
+          <i class="ti ti-logout" aria-hidden="true"></i> Sair
+        </a>
 
       {% elif session.get('usuario_perfil') == 'superadmin' %}
-        <!-- Superadmin: gerencia a lista de casas -->
         <a href="{{ url_for('listar_casas') }}"
-           class="nav-link {% if request.endpoint == 'listar_casas' %}ativo{% endif %}">Casas</a>
+           class="nav-link {% if request.endpoint == 'listar_casas' %}ativo{% endif %}">
+          <i class="ti ti-building-community" aria-hidden="true"></i> Casas
+        </a>
         <a href="{{ url_for('meu_perfil') }}"
-           class="nav-link {% if request.endpoint == 'meu_perfil' %}ativo{% endif %}">👤 Meu Perfil</a>
-        <a href="{{ url_for('logout') }}" class="nav-link">Sair</a>
+           class="nav-link {% if request.endpoint == 'meu_perfil' %}ativo{% endif %}">
+          <i class="ti ti-user" aria-hidden="true"></i> Meu Perfil
+        </a>
+        <a href="{{ url_for('logout') }}" class="nav-link">
+          <i class="ti ti-logout" aria-hidden="true"></i> Sair
+        </a>
 
       {% elif session.get('usuario_nome') %}
-        <!-- Equipe: menu completo -->
         <a href="{{ url_for('index') }}"
-           class="nav-link {% if request.endpoint == 'index' %}ativo{% endif %}">Pacientes</a>
+           class="nav-link {% if request.endpoint == 'index' %}ativo{% endif %}">
+          <i class="ti ti-users" aria-hidden="true"></i> Pacientes
+        </a>
         <a href="{{ url_for('agenda_diaria') }}"
-           class="nav-link {% if request.endpoint == 'agenda_diaria' %}ativo{% endif %}">Agenda</a>
+           class="nav-link {% if request.endpoint == 'agenda_diaria' %}ativo{% endif %}">
+          <i class="ti ti-calendar" aria-hidden="true"></i> Agenda
+        </a>
         <a href="{{ url_for('novo_paciente') }}"
-           class="nav-link {% if request.endpoint == 'novo_paciente' %}ativo{% endif %}">+ Novo Cadastro</a>
+           class="nav-link {% if request.endpoint == 'novo_paciente' %}ativo{% endif %}">
+          <i class="ti ti-plus" aria-hidden="true"></i> Novo Cadastro
+        </a>
         {% if session.get('usuario_perfil') == 'admin' %}
         <a href="{{ url_for('listar_usuarios') }}"
-           class="nav-link {% if request.endpoint == 'listar_usuarios' %}ativo{% endif %}">Usuários</a>
+           class="nav-link {% if request.endpoint == 'listar_usuarios' %}ativo{% endif %}">
+          <i class="ti ti-user-cog" aria-hidden="true"></i> Usuários
+        </a>
         {% endif %}
         <a href="{{ url_for('meu_perfil') }}"
-           class="nav-link {% if request.endpoint == 'meu_perfil' %}ativo{% endif %}">👤 Meu Perfil</a>
+           class="nav-link {% if request.endpoint == 'meu_perfil' %}ativo{% endif %}">
+          <i class="ti ti-user" aria-hidden="true"></i> Meu Perfil
+        </a>
         <button id="btn-notificacoes" type="button" class="nav-link" style="background:none;border:none;cursor:pointer"
                 onclick="ativarNotificacoes(false)" title="Ativar lembretes de antibiótico no celular">
-          🔔 Notificações
+          <i class="ti ti-bell" aria-hidden="true"></i> Notificações
         </button>
-        <a href="{{ url_for('logout') }}" class="nav-link">Sair</a>
+        <a href="{{ url_for('logout') }}" class="nav-link">
+          <i class="ti ti-logout" aria-hidden="true"></i> Sair
+        </a>
       {% endif %}
     </nav>
   </div>
@@ -97,65 +117,62 @@
 </footer>
 
 {% if session.get('usuario_perfil') == 'responsavel' %}
-  <!-- Nav bottom para responsável -->
   <nav class="nav-bottom">
     <a href="{{ url_for('painel_responsavel') }}" class="nav-bottom-item ativo">
-      <span class="nav-bottom-icon">📋</span>
+      <span class="nav-bottom-icon"><i class="ti ti-clipboard-list" aria-hidden="true"></i></span>
       <span>Ficha</span>
     </a>
     <a href="{{ url_for('logout') }}" class="nav-bottom-item">
-      <span class="nav-bottom-icon">🚪</span>
+      <span class="nav-bottom-icon"><i class="ti ti-logout" aria-hidden="true"></i></span>
       <span>Sair</span>
     </a>
   </nav>
 {% elif session.get('usuario_perfil') == 'superadmin' %}
-  <!-- Nav bottom para superadmin -->
   <nav class="nav-bottom">
     <a href="{{ url_for('listar_casas') }}"
        class="nav-bottom-item {% if request.endpoint == 'listar_casas' %}ativo{% endif %}">
-      <span class="nav-bottom-icon">🏘️</span>
+      <span class="nav-bottom-icon"><i class="ti ti-building-community" aria-hidden="true"></i></span>
       <span>Casas</span>
     </a>
     <a href="{{ url_for('meu_perfil') }}"
        class="nav-bottom-item {% if request.endpoint == 'meu_perfil' %}ativo{% endif %}">
-      <span class="nav-bottom-icon">👤</span>
+      <span class="nav-bottom-icon"><i class="ti ti-user" aria-hidden="true"></i></span>
       <span>Perfil</span>
     </a>
     <a href="{{ url_for('logout') }}" class="nav-bottom-item">
-      <span class="nav-bottom-icon">🚪</span>
+      <span class="nav-bottom-icon"><i class="ti ti-logout" aria-hidden="true"></i></span>
       <span>Sair</span>
     </a>
   </nav>
 {% elif session.get('usuario_nome') %}
-  <!-- Nav bottom para equipe -->
   <nav class="nav-bottom">
     <a href="{{ url_for('index') }}"
        class="nav-bottom-item {% if request.endpoint == 'index' %}ativo{% endif %}">
-      <span class="nav-bottom-icon">👥</span>
+      <span class="nav-bottom-icon"><i class="ti ti-users" aria-hidden="true"></i></span>
       <span>Pacientes</span>
     </a>
     <a href="{{ url_for('agenda_diaria') }}"
        class="nav-bottom-item {% if request.endpoint == 'agenda_diaria' %}ativo{% endif %}">
-      <span class="nav-bottom-icon">💊</span>
+      <span class="nav-bottom-icon"><i class="ti ti-calendar" aria-hidden="true"></i></span>
       <span>Agenda</span>
     </a>
     <a href="{{ url_for('novo_paciente') }}"
        class="nav-bottom-item {% if request.endpoint == 'novo_paciente' %}ativo{% endif %}">
-      <span class="nav-bottom-icon">➕</span>
+      <span class="nav-bottom-icon"><i class="ti ti-plus" aria-hidden="true"></i></span>
       <span>Cadastrar</span>
     </a>
     <button type="button" id="btn-notificacoes-mobile" class="nav-bottom-item"
             style="background:none;border:none" onclick="ativarNotificacoes(false)">
-      <span class="nav-bottom-icon">🔔</span>
+      <span class="nav-bottom-icon"><i class="ti ti-bell" aria-hidden="true"></i></span>
       <span>Avisos</span>
     </button>
     <a href="{{ url_for('meu_perfil') }}"
        class="nav-bottom-item {% if request.endpoint == 'meu_perfil' %}ativo{% endif %}">
-      <span class="nav-bottom-icon">👤</span>
+      <span class="nav-bottom-icon"><i class="ti ti-user" aria-hidden="true"></i></span>
       <span>Perfil</span>
     </a>
     <a href="{{ url_for('logout') }}" class="nav-bottom-item">
-      <span class="nav-bottom-icon">🚪</span>
+      <span class="nav-bottom-icon"><i class="ti ti-logout" aria-hidden="true"></i></span>
       <span>Sair</span>
     </a>
   </nav>

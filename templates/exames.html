@@ -5,7 +5,7 @@
 
 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
   <div>
-    <h1 class="titulo-pagina">🔬 Resultados de Exames</h1>
+    <h1 class="titulo-pagina"><i class="ti ti-microscope" aria-hidden="true"></i> Resultados de Exames</h1>
     <p class="subtitulo">{{ paciente.nome }}</p>
   </div>
   <div style="display:flex;gap:.6rem">
@@ -30,8 +30,8 @@
             </span>
           </div>
           <div style="font-size:.85rem;color:var(--cor-texto-suave);margin-bottom:.5rem">
-            {% if e.laboratorio %}🏥 {{ e.laboratorio }}{% endif %}
-            {% if e.medico_solicitante %} · 👨‍⚕️ Dr(a). {{ e.medico_solicitante }}{% endif %}
+            {% if e.laboratorio %}<i class="ti ti-building-hospital" aria-hidden="true"></i> {{ e.laboratorio }}{% endif %}
+            {% if e.medico_solicitante %} · <i class="ti ti-stethoscope" aria-hidden="true"></i> Dr(a). {{ e.medico_solicitante }}{% endif %}
           </div>
           {% if e.resultado %}
           <div style="background:var(--cor-fundo);border-radius:var(--raio-xs);
@@ -55,7 +55,7 @@
           {% if e.arquivo_nome %}
           <div style="margin-top:.5rem">
             <a href="{{ url_for('static', filename='uploads/exames/' + e.arquivo_nome) }}"
-               target="_blank" class="botao botao-secundario botao-pequeno">📎 Ver documento anexado</a>
+               target="_blank" class="botao botao-secundario botao-pequeno"><i class="ti ti-paperclip" aria-hidden="true"></i> Ver documento anexado</a>
           </div>
           {% endif %}
         </div>
@@ -69,7 +69,7 @@
   </div>
 {% else %}
   <div class="vazio">
-    <span class="vazio-icone">🔬</span>
+    <span class="vazio-icone"><i class="ti ti-microscope" aria-hidden="true"></i></span>
     <h2 class="vazio-titulo">Nenhum exame registrado</h2>
     <p class="vazio-texto">Registre os resultados de exames médicos do paciente.</p>
     <button class="botao botao-primario" onclick="abrirModal('modal-exame')">
@@ -124,7 +124,7 @@
                   placeholder="Notas adicionais, recomendações médicas..."></textarea>
       </div>
       <div class="form-grupo">
-        <label class="form-label">📎 Anexar Documento</label>
+        <label class="form-label"><i class="ti ti-paperclip" aria-hidden="true"></i> Anexar Documento</label>
         <input type="file" name="arquivo" class="form-input" accept=".pdf,.png,.jpg,.jpeg,.webp">
         <small style="color:var(--cor-texto-suave)">Formatos aceitos: PDF, JPG, PNG, WEBP</small>
       </div>

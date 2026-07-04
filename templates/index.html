@@ -5,7 +5,7 @@
 
 {% if alertas_antibiotico %}
 <div class="secao" style="border-left:4px solid var(--cor-erro);background:#fff5f5;margin-bottom:1rem">
-  <h2 class="secao-titulo" style="margin-bottom:.5rem">💊 Lembrete de Antibiótico</h2>
+  <h2 class="secao-titulo" style="margin-bottom:.5rem"><i class="ti ti-pill" aria-hidden="true"></i> Lembrete de Antibiótico</h2>
   {% for a in alertas_antibiotico %}
   <div style="padding:.5rem 0;border-bottom:1px solid var(--cor-borda)">
     <a href="{{ url_for('detalhe_paciente', paciente_id=a.paciente_id) }}" style="font-weight:700">{{ a.paciente_nome }}</a>
@@ -35,7 +35,7 @@
 
 <!-- Campo de busca com filtro instantâneo (sem recarregar página) -->
 <div class="busca-wrap">
-  <span class="busca-icone">🔍</span>
+  <span class="busca-icone"><i class="ti ti-search" aria-hidden="true"></i></span>
   <input class="busca-input" type="search" id="busca"
          placeholder="Buscar paciente..." autocomplete="off">
 </div>
@@ -43,7 +43,7 @@
 <!-- Botões visíveis no desktop -->
 <div class="barra-acoes">
   <a href="{{ url_for('novo_paciente') }}" class="botao botao-primario">+ Novo Paciente</a>
-  <a href="{{ url_for('agenda_diaria') }}"  class="botao botao-secundario">💊 Ver Agenda</a>
+  <a href="{{ url_for('agenda_diaria') }}"  class="botao botao-secundario"><i class="ti ti-calendar" aria-hidden="true"></i> Ver Agenda</a>
 </div>
 
 {% if pacientes %}
@@ -77,14 +77,14 @@
 
   <!-- Aparece quando a busca não encontra nada -->
   <div id="busca-vazio" style="display:none" class="vazio">
-    <span class="vazio-icone">🔍</span>
+    <span class="vazio-icone"><i class="ti ti-search" aria-hidden="true"></i></span>
     <h2 class="vazio-titulo">Nenhum resultado</h2>
     <p class="vazio-texto">Tente outro nome.</p>
   </div>
 
 {% else %}
   <div class="vazio">
-    <span class="vazio-icone">👵🏻</span>
+    <span class="vazio-icone"><i class="ti ti-users" aria-hidden="true"></i></span>
     <h2 class="vazio-titulo">Nenhum paciente cadastrado</h2>
     <p class="vazio-texto">Comece cadastrando o primeiro paciente.</p>
     <a href="{{ url_for('novo_paciente') }}" class="botao botao-primario">

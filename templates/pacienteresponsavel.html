@@ -7,7 +7,7 @@
 <div style="background:var(--cor-primaria-clara);border-radius:var(--raio-sm);padding:.75rem 1rem;
             margin-bottom:1rem;display:flex;align-items:center;justify-content:space-between;gap:.5rem;
             font-size:.9rem;color:var(--cor-primaria-escura);flex-wrap:wrap">
-  <span>🔒 <strong>Modo somente leitura</strong> — Você está visualizando a ficha atualizada do paciente.</span>
+  <span><i class="ti ti-lock" aria-hidden="true"></i> <strong>Modo somente leitura</strong> — Você está visualizando a ficha atualizada do paciente.</span>
   <form method="POST" action="{{ url_for('desvincular_idoso') }}"
         onsubmit="return confirm('Desvincular este idoso e acessar outro?');">
     <button type="submit" class="botao botao-secundario botao-pequeno">Trocar idoso vinculado</button>
@@ -59,7 +59,7 @@
 <!-- Condições de saúde -->
 <div class="secao">
   <div class="secao-cabecalho">
-    <h2 class="secao-titulo">🩺 Condições de Saúde</h2>
+    <h2 class="secao-titulo"><i class="ti ti-stethoscope" aria-hidden="true"></i> Condições de Saúde</h2>
   </div>
   {% if condicoes %}
     <div class="lista-condicoes">
@@ -86,7 +86,7 @@
 <!-- Medicamentos e doses -->
 <div class="secao">
   <div class="secao-cabecalho">
-    <h2 class="secao-titulo">💊 Medicamentos</h2>
+    <h2 class="secao-titulo"><i class="ti ti-pill" aria-hidden="true"></i> Medicamentos</h2>
   </div>
   {% if medicamentos %}
     <div class="lista-medicamentos">
@@ -103,7 +103,7 @@
         <div>
           <small style="color:var(--cor-texto-suave);font-weight:700;font-size:.75rem;text-transform:uppercase">Horários:</small>
           <div class="horarios-tags">
-            {% for h in m.horarios %}<span class="horario-tag">🕐 {{ h[:5] }}</span>{% endfor %}
+            {% for h in m.horarios %}<span class="horario-tag"><i class="ti ti-clock" aria-hidden="true"></i> {{ h[:5] }}</span>{% endfor %}
           </div>
         </div>
         {% endif %}
@@ -115,7 +115,7 @@
         {% if m.ultimas_doses %}
         <div style="margin-top:.75rem;padding:.75rem;background:var(--cor-sucesso-bg);border-radius:var(--raio-xs);border-left:3px solid var(--cor-sucesso)">
           <div style="font-size:.75rem;font-weight:700;color:var(--cor-sucesso);text-transform:uppercase;margin-bottom:.4rem">
-            ✓ Últimas doses registradas
+            <i class="ti ti-check" aria-hidden="true"></i> Últimas doses registradas
           </div>
           {% for dose in m.ultimas_doses %}
           <div style="font-size:.85rem;color:var(--cor-texto);margin-bottom:.2rem">
@@ -125,7 +125,7 @@
         </div>
         {% else %}
         <div style="margin-top:.75rem;padding:.5rem .75rem;background:var(--cor-alerta-bg);border-radius:var(--raio-xs);font-size:.85rem;color:var(--cor-alerta)">
-          ⚠️ Nenhuma dose registrada ainda
+          <i class="ti ti-alert-triangle" aria-hidden="true"></i> Nenhuma dose registrada ainda
         </div>
         {% endif %}
       </div>
@@ -140,7 +140,7 @@
 {% if dieta %}
 <div class="secao">
   <div class="secao-cabecalho">
-    <h2 class="secao-titulo">🥗 Alimentação e Dieta</h2>
+    <h2 class="secao-titulo"><i class="ti ti-salad" aria-hidden="true"></i> Alimentação e Dieta</h2>
   </div>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem">
     {% if dieta.comorbidades %}
@@ -170,7 +170,7 @@
     {% if dieta.alergias_alimentares %}
     <div class="dado-item">
       <div class="dado-label">Alergias</div>
-      <div class="dado-valor" style="font-weight:400;font-size:.95rem;color:var(--cor-erro)">⚠️ {{ dieta.alergias_alimentares }}</div>
+      <div class="dado-valor" style="font-weight:400;font-size:.95rem;color:var(--cor-erro)"><i class="ti ti-alert-triangle" aria-hidden="true"></i> {{ dieta.alergias_alimentares }}</div>
     </div>
     {% endif %}
   </div>
@@ -181,7 +181,7 @@
 {% if ficha_psico %}
 <div class="secao">
   <div class="secao-cabecalho">
-    <h2 class="secao-titulo">🧠 Ficha Psicológica</h2>
+    <h2 class="secao-titulo"><i class="ti ti-brain" aria-hidden="true"></i> Ficha Psicológica</h2>
   </div>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem">
     {% if ficha_psico.antecedentes %}
@@ -219,7 +219,7 @@
 {% if profissionais %}
 <div class="secao">
   <div class="secao-cabecalho">
-    <h2 class="secao-titulo">👨‍⚕️ Profissionais Consultados</h2>
+    <h2 class="secao-titulo"><i class="ti ti-stethoscope" aria-hidden="true"></i> Profissionais Consultados</h2>
   </div>
   <div class="lista-condicoes">
     {% for prof in profissionais %}
@@ -240,13 +240,13 @@
 {% if visitas %}
 <div class="secao">
   <div class="secao-cabecalho">
-    <h2 class="secao-titulo">👥 Últimas Visitas</h2>
+    <h2 class="secao-titulo"><i class="ti ti-users" aria-hidden="true"></i> Últimas Visitas</h2>
   </div>
   {% for v in visitas %}
   <div style="padding:.75rem 0;border-bottom:1px solid var(--cor-borda)">
     <div style="font-weight:700">{{ v.visitante_nome }}{% if v.visitante_parentesco %} ({{ v.visitante_parentesco }}){% endif %}</div>
     <div style="font-size:.85rem;color:var(--cor-texto-suave)">
-      📅 {{ v.data_visita }}
+      <i class="ti ti-calendar" aria-hidden="true"></i> {{ v.data_visita }}
       {% if v.hora_entrada %} · Entrada: {{ v.hora_entrada }}{% endif %}
       {% if v.hora_saida %} · Saída: {{ v.hora_saida }}{% endif %}
     </div>
@@ -260,7 +260,7 @@
 {% if evolucoes %}
 <div class="secao">
   <div class="secao-cabecalho">
-    <h2 class="secao-titulo">📋 Evolução Médica</h2>
+    <h2 class="secao-titulo"><i class="ti ti-clipboard-list" aria-hidden="true"></i> Evolução Médica</h2>
   </div>
   {% for ev in evolucoes %}
   <div style="padding:.75rem 0;border-bottom:1px solid var(--cor-borda)">
@@ -279,7 +279,7 @@
 {% if exames %}
 <div class="secao">
   <div class="secao-cabecalho">
-    <h2 class="secao-titulo">🔬 Resultados de Exames</h2>
+    <h2 class="secao-titulo"><i class="ti ti-microscope" aria-hidden="true"></i> Resultados de Exames</h2>
   </div>
   {% for e in exames %}
   <div style="padding:.75rem 0;border-bottom:1px solid var(--cor-borda)">
@@ -289,8 +289,8 @@
     </div>
     {% if e.laboratorio or e.medico_solicitante %}
     <div style="font-size:.85rem;color:var(--cor-texto-suave)">
-      {% if e.laboratorio %}🏥 {{ e.laboratorio }}{% endif %}
-      {% if e.medico_solicitante %} · 👨‍⚕️ {{ e.medico_solicitante }}{% endif %}
+      {% if e.laboratorio %}<i class="ti ti-building-hospital" aria-hidden="true"></i> {{ e.laboratorio }}{% endif %}
+      {% if e.medico_solicitante %} · <i class="ti ti-stethoscope" aria-hidden="true"></i> {{ e.medico_solicitante }}{% endif %}
     </div>
     {% endif %}
     {% if e.resultado %}

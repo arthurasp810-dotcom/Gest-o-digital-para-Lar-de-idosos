@@ -12,6 +12,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
 </head>
 <body style="display:flex;align-items:center;justify-content:center;min-height:100vh;padding:1rem">
 
@@ -26,7 +27,7 @@
 
   <div class="formulario">
     <div style="text-align:center;margin-bottom:1.5rem">
-      <div style="font-size:3rem">👵🏻</div>
+      <div style="font-size:3rem"><i class="ti ti-wheelchair" aria-hidden="true"></i></div>
       <h1 style="font-family:var(--fonte-titulo);font-size:1.6rem;color:var(--cor-primaria-escura);margin-bottom:.25rem">Acessar Ficha do Idoso</h1>
       <p style="color:var(--cor-texto-suave);font-size:.9rem">
         Olá, {{ session.get('usuario_nome') }}! Informe o CPF ou RG do idoso que você acompanha.

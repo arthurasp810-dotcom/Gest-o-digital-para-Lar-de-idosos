@@ -12,6 +12,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
 </head>
 <body style="display:flex;align-items:center;justify-content:center;min-height:100vh;padding:1rem;padding-bottom:1rem">
 
@@ -26,7 +27,9 @@
 
   <div class="formulario">
     <div style="text-align:center;margin-bottom:1.5rem">
-      <div style="font-size:3rem">💙</div>
+      <div style="display:inline-flex;align-items:center;justify-content:center;width:52px;height:52px;background:var(--cor-primaria);border-radius:14px;margin-bottom:.5rem">
+        <i class="ti ti-heartbeat" style="font-size:1.6rem;color:#fff" aria-hidden="true"></i>
+      </div>
       <h1 style="font-family:var(--fonte-titulo);font-size:1.8rem;color:var(--cor-primaria-escura);margin-bottom:.25rem">GestCare</h1>
       <p style="color:var(--cor-texto-suave);font-size:.9rem">Entre com suas credenciais</p>
     </div>
@@ -34,7 +37,7 @@
     <form method="POST">
       {% if casas %}
       <div class="form-grupo">
-        <label class="form-label" for="casa_id">🏘️ Sua instituição <span class="form-obrigatorio">*</span></label>
+        <label class="form-label" for="casa_id"><i class="ti ti-building-community" aria-hidden="true"></i> Sua instituição <span class="form-obrigatorio">*</span></label>
         <select id="casa_id" name="casa_id" class="form-select">
           <option value="">— Selecione sua instituição —</option>
           {% for c in casas %}
