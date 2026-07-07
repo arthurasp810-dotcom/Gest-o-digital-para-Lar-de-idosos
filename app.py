@@ -154,16 +154,15 @@ def init_db():
             CREATE TABLE IF NOT EXISTS casas (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 nome TEXT NOT NULL,
-                slug TEXT UNIQUE,
+                slug TEXT,
                 ativo INTEGER DEFAULT 1,
                 data_cadastro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         ''')
-        # Migration: add slug column if it doesn't exist yet
-        try:
-            cursor.execute('ALTER TABLE casas ADD COLUMN slug TEXT UNIQUE')
-        except Exception:
-            pass
+        # Migration: add slug column if it doesn't exist yet (without UNIQUE — SQLite limitation)
+        colunas = [r[1] for r in cursor.execute("PRAGMA table_info(casas)").fetchall()]
+        if 'slug' not in colunas:
+            cursor.execute('ALTER TABLE casas ADD COLUMN slug TEXT')
         # Populate slugs for existing casas that have none
         sem_slug = conn.execute('SELECT id, nome FROM casas WHERE slug IS NULL OR slug = ""').fetchall()
         for row in sem_slug:
