@@ -644,7 +644,7 @@ def login_casa(slug):
             return render_template('login.html', casa_preselecionar=casa_pre)
 
         if usuario and verificar_senha(senha, usuario['senha']):
-            session.permanent = True
+            session.permanent = False
             session['usuario_id']     = usuario['id']
             session['usuario_nome']   = usuario['nome']
             session['usuario_perfil'] = usuario['perfil']
@@ -709,7 +709,7 @@ def login():
             return render_template('login.html', casas=casas_login)
 
         if usuario and verificar_senha(senha, usuario['senha']):
-            session.permanent = True
+            session.permanent = False
             session['usuario_id']     = usuario['id']
             session['usuario_nome']   = usuario['nome']
             session['usuario_perfil'] = usuario['perfil']
