@@ -27,8 +27,8 @@
         </div>
         {% if c.slug %}
         <div style="margin-top:.4rem;display:flex;align-items:center;gap:.4rem;flex-wrap:wrap">
-          <code id="link-{{ c.id }}" style="font-size:.78rem;background:var(--cor-fundo);border:1px solid var(--cor-borda);border-radius:6px;padding:2px 8px;color:var(--cor-primaria)">{{ request.host_url }}entrar/{{ c.slug }}</code>
-          <button type="button" onclick="copiarLink('{{ c.id }}', '{{ request.host_url }}entrar/{{ c.slug }}')"
+          <code id="link-{{ c.id }}" style="font-size:.78rem;background:var(--cor-fundo);border:1px solid var(--cor-borda);border-radius:6px;padding:2px 8px;color:var(--cor-primaria)">{{ request.host_url.rstrip('/') }}/entrar/{{ c.slug }}</code>
+          <button type="button" onclick="copiarLink('{{ c.id }}', '{{ request.host_url.rstrip('/') }}/entrar/{{ c.slug }}')"
                   class="botao botao-secundario botao-pequeno" style="font-size:.75rem;padding:2px 10px">
             <i class="ti ti-copy" aria-hidden="true"></i> Copiar
           </button>

@@ -651,6 +651,7 @@ def login_casa(slug):
             session['paciente_id']    = usuario['paciente_id']
             session['casa_id']        = usuario['casa_id']
             session['casa_nome']      = casa['nome'] if casa else None
+            session['casa_slug']      = casa_pre['slug']
             flash(f'Bem-vindo(a), {usuario["nome"]}!', 'sucesso')
             if usuario['perfil'] == 'superadmin':
                 return redirect(url_for('listar_casas'))
@@ -715,6 +716,7 @@ def login():
             session['paciente_id']    = usuario['paciente_id']
             session['casa_id']        = usuario['casa_id']
             session['casa_nome']      = casa['nome'] if casa else None
+            session['casa_slug']      = casa['slug'] if casa else None
             flash(f'Bem-vindo(a), {usuario["nome"]}!', 'sucesso')
             if usuario['perfil'] == 'superadmin':
                 return redirect(url_for('listar_casas'))
@@ -913,8 +915,11 @@ def meu_perfil():
 @app.route('/logout')
 def logout():
     nome = session.get('usuario_nome', '')
+    casa_slug = session.get('casa_slug')
     session.clear()
     flash(f'Até logo, {nome}!', 'sucesso')
+    if casa_slug:
+        return redirect(url_for('login_casa', slug=casa_slug))
     return redirect(url_for('login'))
 
 
