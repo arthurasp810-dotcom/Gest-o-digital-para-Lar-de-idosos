@@ -676,13 +676,9 @@ def login():
             return redirect(url_for('listar_casas'))
         return redirect(url_for('index'))
 
-    with get_db() as conn:
-        casas_login = conn.execute('SELECT id, nome FROM casas WHERE ativo = 1 ORDER BY nome').fetchall()
-
     if request.method == 'POST':
         email = request.form.get('email', '').strip()
         senha = request.form.get('senha', '')
-        casa_id_escolhida = request.form.get('casa_id') or None
 
         with get_db() as conn:
             usuario = conn.execute(
@@ -695,18 +691,9 @@ def login():
                     'SELECT * FROM casas WHERE id = ?', (usuario['casa_id'],)
                 ).fetchone()
 
-        if (usuario and casa_id_escolhida and usuario['casa_id']
-                and str(usuario['casa_id']) != str(casa_id_escolhida)):
-            flash('Este e-mail não pertence à casa selecionada. Confira e tente novamente.', 'erro')
-            return render_template('login.html', casas=casas_login)
-
         if usuario and usuario['casa_id'] and (not casa or not casa['ativo']):
             flash('O acesso da sua instituição está temporariamente desativado. Contate o suporte.', 'erro')
-            return render_template('login.html', casas=casas_login)
-
-        if usuario and usuario['casa_id'] and not casa_id_escolhida:
-            flash('Selecione sua instituição antes de entrar.', 'erro')
-            return render_template('login.html', casas=casas_login)
+            return render_template('login.html')
 
         if usuario and verificar_senha(senha, usuario['senha']):
             session.permanent = False
@@ -727,8 +714,20 @@ def login():
             return redirect(url_for('index'))
         else:
             flash('E-mail ou senha incorretos.', 'erro')
-            return render_template('login.html', casas=casas_login)
-    return render_template('login.html', casas=casas_login)
+            return render_template('login.html')
+    return render_template('login.html')
+
+
+@app.route('/entrar/<slug>/cadastro', methods=['GET', 'POST'])
+def cadastro_responsavel_casa(slug):
+    if 'usuario_id' in session:
+        return redirect(url_for('index'))
+    with get_db() as conn:
+        casa_pre = conn.execute('SELECT * FROM casas WHERE slug = ? AND ativo = 1', (slug,)).fetchone()
+    if not casa_pre:
+        flash('Link inválido ou instituição desativada.', 'erro')
+        return redirect(url_for('login'))
+    return _processar_cadastro_responsavel(casa_preselecionar=casa_pre)
 
 
 @app.route('/responsavel/cadastro', methods=['GET', 'POST'])
@@ -737,7 +736,10 @@ def cadastro_responsavel():
         return redirect(url_for('index'))
     with get_db() as conn:
         casas = conn.execute('SELECT id, nome FROM casas WHERE ativo = 1 ORDER BY nome').fetchall()
+    return _processar_cadastro_responsavel(casas=casas)
 
+
+def _processar_cadastro_responsavel(casas=None, casa_preselecionar=None):
     if request.method == 'POST':
         dados = request.form
         nome    = dados.get('nome', '').strip()
@@ -745,17 +747,17 @@ def cadastro_responsavel():
         cpf     = dados.get('cpf', '').strip()
         senha   = dados.get('senha', '')
         senha2  = dados.get('confirmar_senha', '')
-        casa_id = dados.get('casa_id') or None
+        casa_id = str(casa_preselecionar['id']) if casa_preselecionar else (dados.get('casa_id') or None)
 
         if not nome or not email or not cpf or not senha or not casa_id:
             flash('Preencha todos os campos obrigatórios.', 'erro')
-            return render_template('responsavel_cadastro.html', casas=casas)
+            return render_template('responsavel_cadastro.html', casas=casas, casa_preselecionar=casa_preselecionar)
         if len(senha) < 6:
             flash('A senha deve ter pelo menos 6 caracteres.', 'erro')
-            return render_template('responsavel_cadastro.html', casas=casas)
+            return render_template('responsavel_cadastro.html', casas=casas, casa_preselecionar=casa_preselecionar)
         if senha != senha2:
             flash('As senhas não coincidem.', 'erro')
-            return render_template('responsavel_cadastro.html', casas=casas)
+            return render_template('responsavel_cadastro.html', casas=casas, casa_preselecionar=casa_preselecionar)
 
         with get_db() as conn:
             casa = conn.execute(
@@ -763,7 +765,7 @@ def cadastro_responsavel():
             ).fetchone()
         if not casa:
             flash('Instituição inválida. Selecione novamente.', 'erro')
-            return render_template('responsavel_cadastro.html', casas=casas)
+            return render_template('responsavel_cadastro.html', casas=casas, casa_preselecionar=casa_preselecionar)
 
         try:
             with get_db() as conn:
@@ -774,19 +776,20 @@ def cadastro_responsavel():
                 usuario_id = cursor.lastrowid
         except sqlite3.IntegrityError:
             flash('Este e-mail já está cadastrado.', 'erro')
-            return render_template('responsavel_cadastro.html', casas=casas)
+            return render_template('responsavel_cadastro.html', casas=casas, casa_preselecionar=casa_preselecionar)
 
-        session.permanent = True
+        session.permanent = False
         session['usuario_id']     = usuario_id
         session['usuario_nome']   = nome
         session['usuario_perfil'] = 'responsavel'
         session['paciente_id']    = None
         session['casa_id']        = casa['id']
         session['casa_nome']      = casa['nome']
+        session['casa_slug']      = casa['slug']
         flash(f'Conta criada com sucesso, {nome}! Agora informe o CPF/RG do idoso para continuar.', 'sucesso')
         return redirect(url_for('vincular_idoso'))
 
-    return render_template('responsavel_cadastro.html', casas=casas)
+    return render_template('responsavel_cadastro.html', casas=casas, casa_preselecionar=casa_preselecionar)
 
 
 @app.route('/responsavel/vincular-idoso', methods=['GET', 'POST'])
