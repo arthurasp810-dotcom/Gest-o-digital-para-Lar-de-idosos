@@ -25,6 +25,15 @@
         <div style="font-size:.85rem;color:var(--cor-texto-suave);margin-top:.25rem">
           {{ c.total_pacientes }} paciente(s) · {{ c.total_usuarios }} usuário(s) ativos
         </div>
+        {% if c.slug %}
+        <div style="margin-top:.4rem;display:flex;align-items:center;gap:.4rem;flex-wrap:wrap">
+          <code id="link-{{ c.id }}" style="font-size:.78rem;background:var(--cor-fundo);border:1px solid var(--cor-borda);border-radius:6px;padding:2px 8px;color:var(--cor-primaria)">{{ request.host_url }}entrar/{{ c.slug }}</code>
+          <button type="button" onclick="copiarLink('{{ c.id }}', '{{ request.host_url }}entrar/{{ c.slug }}')"
+                  class="botao botao-secundario botao-pequeno" style="font-size:.75rem;padding:2px 10px">
+            <i class="ti ti-copy" aria-hidden="true"></i> Copiar
+          </button>
+        </div>
+        {% endif %}
       </div>
       <div style="display:flex;gap:.5rem">
         <a href="{{ url_for('editar_casa', casa_id=c.id) }}" class="botao botao-secundario botao-pequeno">Editar</a>
@@ -46,4 +55,17 @@
     <a href="{{ url_for('nova_casa') }}" class="botao botao-primario">+ Cadastrar Casa</a>
   </div>
 {% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+function copiarLink(id, url) {
+  navigator.clipboard.writeText(url).then(function() {
+    var btn = event.target.closest('button');
+    var original = btn.innerHTML;
+    btn.innerHTML = '<i class="ti ti-check" aria-hidden="true"></i> Copiado!';
+    setTimeout(function() { btn.innerHTML = original; }, 2000);
+  });
+}
+</script>
 {% endblock %}

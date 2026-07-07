@@ -3,6 +3,8 @@ import uuid
 import json
 import base64
 import atexit
+import re
+import unicodedata
 from functools import wraps
 from flask import Flask, render_template, request, redirect, url_for, flash, session, send_from_directory, jsonify
 from werkzeug.utils import secure_filename
@@ -152,10 +154,22 @@ def init_db():
             CREATE TABLE IF NOT EXISTS casas (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 nome TEXT NOT NULL,
+                slug TEXT UNIQUE,
                 ativo INTEGER DEFAULT 1,
                 data_cadastro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         ''')
+        # Migration: add slug column if it doesn't exist yet
+        try:
+            cursor.execute('ALTER TABLE casas ADD COLUMN slug TEXT UNIQUE')
+        except Exception:
+            pass
+        # Populate slugs for existing casas that have none
+        sem_slug = cursor.execute('SELECT id, nome FROM casas WHERE slug IS NULL OR slug = ""').fetchall()
+        for row in sem_slug:
+            base = gerar_slug(row['nome'])
+            slug = slug_unico(conn, base)
+            cursor.execute('UPDATE casas SET slug = ? WHERE id = ?', (slug, row['id']))
 
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS pacientes (
@@ -467,6 +481,32 @@ def buscar_paciente_da_casa(conn, paciente_id):
     ).fetchone()
 
 
+def gerar_slug(nome):
+    """Gera slug URL-seguro a partir do nome da casa."""
+    nome_norm = unicodedata.normalize('NFD', nome)
+    nome_ascii = nome_norm.encode('ascii', 'ignore').decode('ascii')
+    slug = nome_ascii.lower()
+    slug = re.sub(r'[^a-z0-9]+', '-', slug)
+    slug = slug.strip('-')
+    return slug or 'casa'
+
+
+def slug_unico(conn, base_slug, excluir_id=None):
+    """Garante unicidade do slug adicionando sufixo numérico se necessário."""
+    slug = base_slug
+    contador = 1
+    while True:
+        query = 'SELECT id FROM casas WHERE slug = ?'
+        params = [slug]
+        if excluir_id:
+            query += ' AND id != ?'
+            params.append(excluir_id)
+        if not conn.execute(query, params).fetchone():
+            return slug
+        slug = f'{base_slug}-{contador}'
+        contador += 1
+
+
 # ============================================================================
 # GESTÃO DE CASAS (multi-instituição — restrito ao superadmin)
 # ============================================================================
@@ -505,8 +545,10 @@ def nova_casa():
 
         try:
             with get_db() as conn:
+                base = gerar_slug(nome_casa)
+                slug = slug_unico(conn, base)
                 casa_id = conn.execute(
-                    'INSERT INTO casas (nome) VALUES (?)', (nome_casa,)
+                    'INSERT INTO casas (nome, slug) VALUES (?, ?)', (nome_casa, slug)
                 ).lastrowid
                 conn.execute('''
                     INSERT INTO usuarios (nome, email, senha, perfil, casa_id)
@@ -537,7 +579,9 @@ def editar_casa(casa_id):
             if not nome:
                 flash('Informe o nome da casa.', 'erro')
                 return render_template('casa_editar.html', casa=casa)
-            conn.execute('UPDATE casas SET nome = ? WHERE id = ?', (nome, casa_id))
+            base = gerar_slug(nome)
+            slug = slug_unico(conn, base, excluir_id=casa_id)
+            conn.execute('UPDATE casas SET nome = ?, slug = ? WHERE id = ?', (nome, slug, casa_id))
             flash('Nome da casa atualizado!', 'sucesso')
             return redirect(url_for('listar_casas'))
 
@@ -561,6 +605,67 @@ def toggle_casa(casa_id):
 # ============================================================================
 # AUTENTICAÇÃO
 # ============================================================================
+
+@app.route('/entrar/<slug>', methods=['GET', 'POST'])
+def login_casa(slug):
+    if 'usuario_id' in session:
+        if session.get('usuario_perfil') == 'responsavel':
+            return redirect(url_for('painel_responsavel'))
+        if session.get('usuario_perfil') == 'superadmin':
+            return redirect(url_for('listar_casas'))
+        return redirect(url_for('index'))
+
+    with get_db() as conn:
+        casa_pre = conn.execute('SELECT * FROM casas WHERE slug = ? AND ativo = 1', (slug,)).fetchone()
+    if not casa_pre:
+        flash('Link inválido ou instituição desativada.', 'erro')
+        return redirect(url_for('login'))
+
+    if request.method == 'POST':
+        email = request.form.get('email', '').strip()
+        senha = request.form.get('senha', '')
+        casa_id_escolhida = str(casa_pre['id'])
+
+        with get_db() as conn:
+            usuario = conn.execute(
+                'SELECT * FROM usuarios WHERE LOWER(email) = LOWER(?) AND ativo = 1',
+                (email,)
+            ).fetchone()
+            casa = None
+            if usuario and usuario['casa_id']:
+                casa = conn.execute('SELECT * FROM casas WHERE id = ?', (usuario['casa_id'],)).fetchone()
+
+        if (usuario and usuario['casa_id']
+                and str(usuario['casa_id']) != casa_id_escolhida):
+            flash('Este e-mail não pertence a esta instituição.', 'erro')
+            return render_template('login.html', casa_preselecionar=casa_pre)
+
+        if usuario and usuario['casa_id'] and (not casa or not casa['ativo']):
+            flash('O acesso da sua instituição está temporariamente desativado. Contate o suporte.', 'erro')
+            return render_template('login.html', casa_preselecionar=casa_pre)
+
+        if usuario and verificar_senha(senha, usuario['senha']):
+            session.permanent = True
+            session['usuario_id']     = usuario['id']
+            session['usuario_nome']   = usuario['nome']
+            session['usuario_perfil'] = usuario['perfil']
+            session['paciente_id']    = usuario['paciente_id']
+            session['casa_id']        = usuario['casa_id']
+            session['casa_nome']      = casa['nome'] if casa else None
+            flash(f'Bem-vindo(a), {usuario["nome"]}!', 'sucesso')
+            if usuario['perfil'] == 'superadmin':
+                return redirect(url_for('listar_casas'))
+            if usuario['perfil'] == 'responsavel':
+                if not usuario['paciente_id']:
+                    return redirect(url_for('vincular_idoso'))
+                return redirect(url_for('painel_responsavel'))
+            return redirect(url_for('index'))
+        else:
+            flash('E-mail ou senha incorretos.', 'erro')
+            return render_template('login.html', casa_preselecionar=casa_pre)
+
+    return render_template('login.html', casa_preselecionar=casa_pre)
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():

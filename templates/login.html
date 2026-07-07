@@ -35,7 +35,13 @@
     </div>
 
     <form method="POST">
-      {% if casas %}
+      {% if casa_preselecionar %}
+      <div class="form-grupo" style="background:var(--cor-fundo);border:1px solid var(--cor-borda);border-radius:10px;padding:.75rem 1rem;display:flex;align-items:center;gap:.5rem">
+        <i class="ti ti-building-community" style="color:var(--cor-primaria);font-size:1.1rem" aria-hidden="true"></i>
+        <span style="font-weight:700;color:var(--cor-texto)">{{ casa_preselecionar.nome }}</span>
+      </div>
+      <input type="hidden" name="casa_id" value="{{ casa_preselecionar.id }}">
+      {% elif casas %}
       <div class="form-grupo">
         <label class="form-label" for="casa_id"><i class="ti ti-building-community" aria-hidden="true"></i> Sua instituição <span class="form-obrigatorio">*</span></label>
         <select id="casa_id" name="casa_id" class="form-select">
