@@ -3,17 +3,21 @@
 
 {% block conteudo %}
 
-<div class="page-header-row" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+<div class="page-header-row" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;gap:1rem;flex-wrap:wrap">
   <div>
     <h1 class="titulo-pagina"><i class="ti ti-users" aria-hidden="true"></i> Visitas de Familiares</h1>
     <p class="subtitulo">{{ paciente.nome }}</p>
   </div>
-  <div style="display:flex;gap:.6rem">
-    <a href="{{ url_for('detalhe_paciente', paciente_id=paciente.id) }}"
-       class="botao botao-secundario botao-pequeno">← Voltar</a>
-    <button class="botao botao-primario botao-pequeno"
-            onclick="abrirModal('modal-visita')">+ Registrar Visita</button>
-  </div>
+  <button class="botao botao-primario botao-pequeno"
+          onclick="abrirModal('modal-visita')">+ Registrar Visita</button>
+</div>
+
+<div class="tabs">
+  <a href="{{ url_for('detalhe_paciente', paciente_id=paciente.id) }}" class="tab-item"><i class="ti ti-layout-grid" aria-hidden="true"></i> Resumo</a>
+  <a href="{{ url_for('detalhe_paciente', paciente_id=paciente.id) }}#medicamentos" class="tab-item"><i class="ti ti-pill" aria-hidden="true"></i> Medicações</a>
+  <a href="{{ url_for('listar_evolucoes', paciente_id=paciente.id) }}" class="tab-item"><i class="ti ti-clipboard-list" aria-hidden="true"></i> Evolução</a>
+  <a href="{{ url_for('listar_exames', paciente_id=paciente.id) }}" class="tab-item"><i class="ti ti-microscope" aria-hidden="true"></i> Documentos</a>
+  <span class="tab-item ativo"><i class="ti ti-users" aria-hidden="true"></i> Visitas</span>
 </div>
 
 {% if visitas %}

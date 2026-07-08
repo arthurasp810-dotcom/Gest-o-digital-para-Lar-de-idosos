@@ -81,19 +81,18 @@
   </form>
 </div>
 
-<!-- Links rápidos para páginas separadas -->
-<div style="display:flex;gap:.75rem;flex-wrap:wrap;margin-bottom:1rem">
-  <a href="{{ url_for('listar_visitas', paciente_id=paciente.id) }}"
-     class="botao botao-secundario botao-pequeno">
-    <i class="ti ti-users" aria-hidden="true"></i> Visitas <span style="background:var(--cor-primaria);color:#fff;border-radius:20px;padding:1px 7px;font-size:11px;margin-left:4px">{{ total_visitas }}</span>
+<!-- Abas de navegação da ficha -->
+<div class="tabs">
+  <span class="tab-item ativo"><i class="ti ti-layout-grid" aria-hidden="true"></i> Resumo</span>
+  <a href="#medicamentos" class="tab-item"><i class="ti ti-pill" aria-hidden="true"></i> Medicações</a>
+  <a href="{{ url_for('listar_evolucoes', paciente_id=paciente.id) }}" class="tab-item">
+    <i class="ti ti-clipboard-list" aria-hidden="true"></i> Evolução <span style="background:var(--cor-fundo);color:var(--cor-texto-suave);border-radius:20px;padding:0 6px;font-size:11px">{{ total_evolucoes }}</span>
   </a>
-  <a href="{{ url_for('listar_exames', paciente_id=paciente.id) }}"
-     class="botao botao-secundario botao-pequeno">
-    <i class="ti ti-microscope" aria-hidden="true"></i> Exames <span style="background:var(--cor-primaria);color:#fff;border-radius:20px;padding:1px 7px;font-size:11px;margin-left:4px">{{ total_exames }}</span>
+  <a href="{{ url_for('listar_exames', paciente_id=paciente.id) }}" class="tab-item">
+    <i class="ti ti-microscope" aria-hidden="true"></i> Documentos <span style="background:var(--cor-fundo);color:var(--cor-texto-suave);border-radius:20px;padding:0 6px;font-size:11px">{{ total_exames }}</span>
   </a>
-  <a href="{{ url_for('listar_evolucoes', paciente_id=paciente.id) }}"
-     class="botao botao-secundario botao-pequeno">
-    <i class="ti ti-clipboard-list" aria-hidden="true"></i> Evolução Médica <span style="background:var(--cor-primaria);color:#fff;border-radius:20px;padding:1px 7px;font-size:11px;margin-left:4px">{{ total_evolucoes }}</span>
+  <a href="{{ url_for('listar_visitas', paciente_id=paciente.id) }}" class="tab-item">
+    <i class="ti ti-users" aria-hidden="true"></i> Visitas <span style="background:var(--cor-fundo);color:var(--cor-texto-suave);border-radius:20px;padding:0 6px;font-size:11px">{{ total_visitas }}</span>
   </a>
 </div>
 
@@ -281,7 +280,7 @@
 <!-- ══════════════════════════════════════════════════
      SEÇÃO: Medicamentos
 ══════════════════════════════════════════════════ -->
-<div class="secao">
+<div class="secao" id="medicamentos" style="scroll-margin-top:20px">
   <div class="secao-cabecalho">
     <h2 class="secao-titulo">Medicamentos</h2>
     <button class="botao botao-primario botao-pequeno"

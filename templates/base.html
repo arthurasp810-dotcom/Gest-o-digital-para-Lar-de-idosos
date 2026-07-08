@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="description" content="Sistema de gestão para instituições de cuidado">
-  <meta name="theme-color" content="#1e4d5a">
+  <meta name="theme-color" content="#0f4c57">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -15,108 +15,134 @@
   <title>{% block titulo %}GestCare{% endblock %} - Sistema</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=DM+Serif+Display&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body data-notificacoes="{{ 'equipe' if session.get('usuario_perfil') in ('enfermeiro', 'admin') else '' }}">
 
-<header class="cabecalho">
-  <div class="cabecalho-container">
-    {% if session.get('usuario_perfil') == 'responsavel' %}
-      <a href="{{ url_for('painel_responsavel') }}" class="logo">
+{% set perfil = session.get('usuario_perfil') %}
+{% set iniciais = session.get('usuario_nome', '?')[0]|upper %}
+
+<div class="app-shell">
+
+  {% if perfil == 'responsavel' %}
+    <!-- ── TOPBAR — Portal do Responsável (sem sidebar) ────── -->
+    <div class="main-area">
+      <header class="topbar-familia">
+        <div class="cabecalho-container">
+          <a href="{{ url_for('painel_responsavel') }}" class="logo">
+            <span class="logo-mark"><i class="ti ti-heartbeat" aria-hidden="true"></i></span>
+            <div>
+              <div>GestCare</div>
+              <div class="familia-etiqueta">Área da Família{% if session.get('casa_nome') %} · {{ session.get('casa_nome') }}{% endif %}</div>
+            </div>
+          </a>
+          <div style="display:flex;align-items:center;gap:14px">
+            <a href="{{ url_for('logout') }}" class="sidebar-item" style="width:auto;color:rgba(255,255,255,.85);padding:8px 10px">
+              <i class="ti ti-logout" aria-hidden="true"></i> Sair
+            </a>
+            <div class="avatar-usuario">{{ iniciais }}</div>
+          </div>
+        </div>
+      </header>
+
+  {% else %}
+    <!-- ── SIDEBAR — Equipe / Superadmin ────────────────────── -->
+    <aside class="sidebar">
+      <div class="sidebar-topo">
         <span class="logo-mark"><i class="ti ti-heartbeat" aria-hidden="true"></i></span>
-        <span>GestCare</span>
-      </a>
-    {% elif session.get('usuario_perfil') == 'superadmin' %}
-      <a href="{{ url_for('listar_casas') }}" class="logo">
-        <span class="logo-mark"><i class="ti ti-heartbeat" aria-hidden="true"></i></span>
-        <span>GestCare</span>
-      </a>
-    {% else %}
-      <a href="{{ url_for('index') }}" class="logo">
-        <span class="logo-mark"><i class="ti ti-heartbeat" aria-hidden="true"></i></span>
-        <span>GestCare</span>
-        {% if session.get('casa_nome') %}
-          <span style="font-size:.7rem;font-weight:600;background:rgba(255,255,255,.15);
-                       padding:2px 8px;border-radius:20px;margin-left:8px;letter-spacing:.03em">{{ session.get('casa_nome') }}</span>
+        <div>
+          <div class="logo" style="font-size:1.05rem">GestCare</div>
+          {% if session.get('casa_nome') %}
+            <span class="sidebar-etiqueta">{{ session.get('casa_nome') }}</span>
+          {% endif %}
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        {% if perfil == 'superadmin' %}
+          <a href="{{ url_for('listar_casas') }}" class="sidebar-item {% if request.endpoint == 'listar_casas' %}ativo{% endif %}">
+            <i class="ti ti-building-community" aria-hidden="true"></i> Casas
+          </a>
+        {% elif session.get('usuario_nome') %}
+          <a href="{{ url_for('index') }}" class="sidebar-item {% if request.endpoint == 'index' %}ativo{% endif %}">
+            <i class="ti ti-users" aria-hidden="true"></i> Pacientes
+          </a>
+          <a href="{{ url_for('agenda_diaria') }}" class="sidebar-item {% if request.endpoint == 'agenda_diaria' %}ativo{% endif %}">
+            <i class="ti ti-calendar" aria-hidden="true"></i> Agenda
+          </a>
+          <a href="{{ url_for('novo_paciente') }}" class="sidebar-item {% if request.endpoint == 'novo_paciente' %}ativo{% endif %}">
+            <i class="ti ti-plus" aria-hidden="true"></i> Novo Cadastro
+          </a>
+          {% if perfil == 'admin' %}
+          <a href="{{ url_for('listar_usuarios') }}" class="sidebar-item {% if request.endpoint == 'listar_usuarios' %}ativo{% endif %}">
+            <i class="ti ti-user-cog" aria-hidden="true"></i> Usuários
+          </a>
+          {% endif %}
         {% endif %}
-      </a>
-    {% endif %}
-
-    <nav class="nav-menu-desktop">
-      {% if session.get('usuario_perfil') == 'responsavel' %}
-        <a href="{{ url_for('painel_responsavel') }}" class="nav-link ativo">
-          <i class="ti ti-clipboard-list" aria-hidden="true"></i> Ficha do Paciente
-        </a>
-        <a href="{{ url_for('logout') }}" class="nav-link">
-          <i class="ti ti-logout" aria-hidden="true"></i> Sair
-        </a>
-
-      {% elif session.get('usuario_perfil') == 'superadmin' %}
-        <a href="{{ url_for('listar_casas') }}"
-           class="nav-link {% if request.endpoint == 'listar_casas' %}ativo{% endif %}">
-          <i class="ti ti-building-community" aria-hidden="true"></i> Casas
-        </a>
-        <a href="{{ url_for('meu_perfil') }}"
-           class="nav-link {% if request.endpoint == 'meu_perfil' %}ativo{% endif %}">
+        <a href="{{ url_for('meu_perfil') }}" class="sidebar-item {% if request.endpoint == 'meu_perfil' %}ativo{% endif %}">
           <i class="ti ti-user" aria-hidden="true"></i> Meu Perfil
         </a>
-        <a href="{{ url_for('logout') }}" class="nav-link">
-          <i class="ti ti-logout" aria-hidden="true"></i> Sair
-        </a>
+      </nav>
 
-      {% elif session.get('usuario_nome') %}
-        <a href="{{ url_for('index') }}"
-           class="nav-link {% if request.endpoint == 'index' %}ativo{% endif %}">
-          <i class="ti ti-users" aria-hidden="true"></i> Pacientes
-        </a>
-        <a href="{{ url_for('agenda_diaria') }}"
-           class="nav-link {% if request.endpoint == 'agenda_diaria' %}ativo{% endif %}">
-          <i class="ti ti-calendar" aria-hidden="true"></i> Agenda
-        </a>
-        <a href="{{ url_for('novo_paciente') }}"
-           class="nav-link {% if request.endpoint == 'novo_paciente' %}ativo{% endif %}">
-          <i class="ti ti-plus" aria-hidden="true"></i> Novo Cadastro
-        </a>
-        {% if session.get('usuario_perfil') == 'admin' %}
-        <a href="{{ url_for('listar_usuarios') }}"
-           class="nav-link {% if request.endpoint == 'listar_usuarios' %}ativo{% endif %}">
-          <i class="ti ti-user-cog" aria-hidden="true"></i> Usuários
-        </a>
-        {% endif %}
-        <a href="{{ url_for('meu_perfil') }}"
-           class="nav-link {% if request.endpoint == 'meu_perfil' %}ativo{% endif %}">
-          <i class="ti ti-user" aria-hidden="true"></i> Meu Perfil
-        </a>
-        <button id="btn-notificacoes" type="button" class="nav-link" style="background:none;border:none;cursor:pointer"
-                onclick="ativarNotificacoes(false)" title="Ativar lembretes de antibiótico no celular">
+      <div class="sidebar-rodape">
+        {% if perfil in ('enfermeiro', 'admin') %}
+        <button id="btn-notificacoes" type="button" class="sidebar-item" onclick="ativarNotificacoes(false)" title="Ativar lembretes de antibiótico no celular">
           <i class="ti ti-bell" aria-hidden="true"></i> Notificações
         </button>
-        <a href="{{ url_for('logout') }}" class="nav-link">
+        {% endif %}
+        <a href="{{ url_for('logout') }}" class="sidebar-item">
           <i class="ti ti-logout" aria-hidden="true"></i> Sair
         </a>
-      {% endif %}
-    </nav>
-  </div>
-</header>
+      </div>
+    </aside>
 
-<main class="conteudo">
-  {% with mensagens = get_flashed_messages(with_categories=true) %}
-    {% if mensagens %}
-      {% for categoria, msg in mensagens %}
-        <div class="alerta alerta-{{ categoria }}">{{ msg }}</div>
-      {% endfor %}
-    {% endif %}
-  {% endwith %}
-  {% block conteudo %}{% endblock %}
-</main>
+    <div class="main-area">
+      <!-- Barra mobile (logo, escondida no desktop) -->
+      <header class="cabecalho cabecalho-mobile">
+        <div class="cabecalho-container">
+          {% if perfil == 'superadmin' %}
+            <a href="{{ url_for('listar_casas') }}" class="logo">
+              <span class="logo-mark"><i class="ti ti-heartbeat" aria-hidden="true"></i></span>
+              <span>GestCare</span>
+            </a>
+          {% else %}
+            <a href="{{ url_for('index') }}" class="logo">
+              <span class="logo-mark"><i class="ti ti-heartbeat" aria-hidden="true"></i></span>
+              <span>GestCare</span>
+            </a>
+          {% endif %}
+          <div class="avatar-usuario" style="background:rgba(255,255,255,.16);color:#fff">{{ iniciais }}</div>
+        </div>
+      </header>
 
-<footer class="rodape">
-  <p>GestCare — Sistema de Gestão</p>
-</footer>
+      <!-- Barra desktop (avatar) -->
+      <div class="topo-desktop">
+        <a href="{{ url_for('meu_perfil') }}" title="Meu Perfil">
+          <div class="avatar-usuario">{{ iniciais }}</div>
+        </a>
+      </div>
+  {% endif %}
 
-{% if session.get('usuario_perfil') == 'responsavel' %}
+      <main class="conteudo">
+        {% with mensagens = get_flashed_messages(with_categories=true) %}
+          {% if mensagens %}
+            {% for categoria, msg in mensagens %}
+              <div class="alerta alerta-{{ categoria }}">{{ msg }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+        {% block conteudo %}{% endblock %}
+      </main>
+
+      <footer class="rodape">
+        <p>GestCare — Sistema de Gestão</p>
+      </footer>
+    </div>
+</div>
+
+{% if perfil == 'responsavel' %}
   <nav class="nav-bottom">
     <a href="{{ url_for('painel_responsavel') }}" class="nav-bottom-item ativo">
       <span class="nav-bottom-icon"><i class="ti ti-clipboard-list" aria-hidden="true"></i></span>
@@ -127,7 +153,7 @@
       <span>Sair</span>
     </a>
   </nav>
-{% elif session.get('usuario_perfil') == 'superadmin' %}
+{% elif perfil == 'superadmin' %}
   <nav class="nav-bottom">
     <a href="{{ url_for('listar_casas') }}"
        class="nav-bottom-item {% if request.endpoint == 'listar_casas' %}ativo{% endif %}">
@@ -151,7 +177,7 @@
       <span class="nav-bottom-icon"><i class="ti ti-users" aria-hidden="true"></i></span>
       <span>Pacientes</span>
     </a>
-    {% if session.get('usuario_perfil') == 'admin' %}
+    {% if perfil == 'admin' %}
     <a href="{{ url_for('listar_usuarios') }}"
        class="nav-bottom-item {% if request.endpoint == 'listar_usuarios' %}ativo{% endif %}">
       <span class="nav-bottom-icon"><i class="ti ti-user-cog" aria-hidden="true"></i></span>

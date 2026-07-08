@@ -25,26 +25,50 @@
 {% endif %}
 
 <h1 class="titulo-pagina">Pacientes</h1>
-<p class="subtitulo">
-  {% if pacientes %}
-    {{ pacientes|length }} paciente{{ 's' if pacientes|length != 1 else '' }} ativo{{ 's' if pacientes|length != 1 else '' }}
-  {% else %}
-    Nenhum paciente cadastrado ainda
-  {% endif %}
-</p>
+{% if pacientes %}
+<p class="subtitulo">{{ pacientes|length }} paciente{{ 's' if pacientes|length != 1 else '' }} ativo{{ 's' if pacientes|length != 1 else '' }}</p>
+{% endif %}
+
+<!-- Faixa de stat cards -->
+<div class="stats-grid">
+  <div class="stat-card">
+    <div class="stat-card-icone"><i class="ti ti-users" aria-hidden="true"></i></div>
+    <div class="stat-card-label">Pacientes</div>
+    <div class="stat-card-numero">{{ pacientes|length }}</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-card-icone"><i class="ti ti-calendar" aria-hidden="true"></i></div>
+    <div class="stat-card-label">Agenda hoje</div>
+    <div class="stat-card-numero">{{ agenda_hoje_total }}</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-card-icone"><i class="ti ti-user-cog" aria-hidden="true"></i></div>
+    <div class="stat-card-label">Equipe ativa</div>
+    <div class="stat-card-numero">{{ equipe_ativa_total }}</div>
+  </div>
+  <div class="stat-card {{ 'stat-alerta' if alertas_antibiotico }}">
+    <div class="stat-card-icone"><i class="ti ti-alert-triangle" aria-hidden="true"></i></div>
+    <div class="stat-card-label">Alertas</div>
+    <div class="stat-card-numero">{{ alertas_antibiotico|length }}</div>
+  </div>
+</div>
 
 <!-- Campo de busca com filtro instantâneo (sem recarregar página) -->
+{% if pacientes %}
 <div class="busca-wrap">
   <span class="busca-icone"><i class="ti ti-search" aria-hidden="true"></i></span>
   <input class="busca-input" type="search" id="busca"
          placeholder="Buscar paciente..." autocomplete="off">
 </div>
+{% endif %}
 
+{% if pacientes %}
 <!-- Botões visíveis no desktop -->
 <div class="barra-acoes">
   <a href="{{ url_for('novo_paciente') }}" class="botao botao-primario">+ Novo Paciente</a>
   <a href="{{ url_for('agenda_diaria') }}"  class="botao botao-secundario"><i class="ti ti-calendar" aria-hidden="true"></i> Ver Agenda</a>
 </div>
+{% endif %}
 
 {% if pacientes %}
   <div class="grid-pacientes" id="lista-pacientes">

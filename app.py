@@ -1158,8 +1158,22 @@ def index():
             except ValueError:
                 a_dict['dias_restantes'] = None
             alertas_antibiotico.append(a_dict)
+
+        agenda_hoje_total = conn.execute('''
+            SELECT COUNT(*) FROM horarios_medicamento h
+            JOIN medicamentos m ON h.medicamento_id = m.id
+            JOIN pacientes p ON m.paciente_id = p.id
+            WHERE m.ativo = 1 AND p.ativo = 1 AND p.casa_id = ?
+        ''', (casa_id_atual(),)).fetchone()[0]
+
+        equipe_ativa_total = conn.execute('''
+            SELECT COUNT(*) FROM usuarios
+            WHERE casa_id = ? AND ativo = 1 AND perfil != 'responsavel'
+        ''', (casa_id_atual(),)).fetchone()[0]
     return render_template('index.html', pacientes=pacientes_list,
-                           alertas_antibiotico=alertas_antibiotico)
+                           alertas_antibiotico=alertas_antibiotico,
+                           agenda_hoje_total=agenda_hoje_total,
+                           equipe_ativa_total=equipe_ativa_total)
 
 
 @app.route('/paciente/novo', methods=['GET', 'POST'])

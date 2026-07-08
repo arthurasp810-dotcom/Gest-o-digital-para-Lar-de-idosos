@@ -3,6 +3,9 @@
 
 {% block conteudo %}
 
+<h1 class="titulo-pagina">Olá, {{ session.get('usuario_nome', '').split(' ')[0] }} 👋</h1>
+<p class="subtitulo">Acompanhamento de {{ paciente.nome }}</p>
+
 <!-- Aviso de modo leitura -->
 <div style="background:var(--cor-primaria-clara);border-radius:var(--raio-sm);padding:.75rem 1rem;
             margin-bottom:1rem;display:flex;align-items:center;justify-content:space-between;gap:.5rem;
